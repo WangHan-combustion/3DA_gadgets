@@ -6,10 +6,14 @@
 %           opt      : the axis on which the slides is taken
 %           n_slide  : the index of the slide on the chosen axis
 % OUTPUT :
-%           A .mat file saved under name filename.mat
+%           data_3DA : matlab data struct
+%                       'nx','ny','nz','nvar','dt','time','data'
 %           All information in the restart file is preserved
 % ----------------------------------------------------------------
-function read3DAdata(filename,var_list,opt,n_slide)
+function [ data_3DA ] = read3DAdata(filename,var_list,opt,n_slide)
+if (nargout<1 && isempty(filename))
+    error('Need a filename if no output varaible is supplied.');
+end
 fid = fopen(filename);
 
 nx = fread(fid,1,'int');
@@ -27,6 +31,7 @@ if isempty(var_list)
     for ivar = 1:nvar
         data(ivar).name = strtrim(char(fread(fid,8,'char*1')'));
         fprintf(data(ivar).name)
+        fprintf(' ')
     end
     fprintf('\n')
     
@@ -93,7 +98,18 @@ else
         end
     end
 end
-
-save(['./',filename,'.mat'],'nx','ny','nz','nvar','dt','time','data')
-% save('./data.mat','nx','ny','nz','nvar','dt','time','data')
 fclose(fid);
+
+if (~isempty(filename))
+    save(['./',filename,'.mat'],'nx','ny','nz','nvar','dt','time','data')
+end
+if (nargout>=1)
+    data_3DA.nx = nx;
+    data_3DA.ny = ny;
+    data_3DA.nz = nz;
+    data_3DA.nvar = nvar;
+    data_3DA.dt = dt;
+    data_3DA.time = time;
+    data_3DA.data = data;
+end
+end
