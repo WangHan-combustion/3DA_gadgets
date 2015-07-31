@@ -18,13 +18,14 @@ fprintf('Data file at time : %15.7e\n',data_3DA.time)
 fwrite(fid,data_3DA.dt,'double');
 fwrite(fid,data_3DA.time,'double');
 
-for ivar = 1:nvar
+for ivar = 1:data_3DA.nvar
     fprintf(data_3DA.data(ivar).name)
+    fprintf(' ')
     fwrite(fid, strpad(data_3DA.data(ivar).name,8), 'char*1');
 end
 fprintf('\n')
 
-for ivar = 1:nvar
+for ivar = 1:data_3DA.nvar
     tmp = reshape(data_3DA.data(ivar).value, [], 1);
     fwrite(fid,tmp,'double');
 end

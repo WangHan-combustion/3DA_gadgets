@@ -35,5 +35,26 @@ if (~isempty(tmp))
 else
     config.bc = zeros(config.nx,config.ny,config.nz);
 end
+
+if (config.nx~=length(config.x)-1 || config.ny~=length(config.y)-1 || config.nz~=length(config.z)-1)
+    error('Size in the config file does not mathch coordinate arrays.')
+end
+
+if (any(diff(config.x)<=0) || any(diff(config.y)<=0) || any(diff(config.z)<=0))
+    error('Coordinate array is not monotonically increasing.')
+end
+
+size_tmp = size(config.mask);
+if (config.nx~=size_tmp(1) || config.ny~=size_tmp(2) || config.nz~=size_tmp(3))
+    error('Size in the config file does not match mask')
+end
+
+if (isfield(config, 'bc') && ~isempty(config.bc))
+    size_tmp = size(config.bc);
+    if (config.nx~=size_tmp(1) || config.ny~=size_tmp(2) || config.nz~=size_tmp(3))
+        error('Size in the config file does not match mask')
+    end
+end
+
 end
 
