@@ -4,7 +4,8 @@ function [ config ] = read3DAconfig( filename )
 %           filename : the file name of the 3DA config file
 % OUTPUT :
 %           matlab struc config
-%               "x", "y", "z", "mask", "bc"
+%               "x", "y", "z", "mask", "bc", "simu_name", "icyl", 
+%               "xper", "yper", "zper", "nx", "ny", "nz"
 % ----------------------------------------------------------------
 fid = fopen(filename);
 
