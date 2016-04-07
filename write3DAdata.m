@@ -8,7 +8,7 @@ function write3DAdata( data_3DA, filename )
 %           none
 % ----------------------------------------------------------------
 
-fid = fopen(filename, 'wt');
+fid = fopen(filename, 'w+');
 fprintf('Grid : %i x %i x %i\n',data_3DA.nx,data_3DA.ny,data_3DA.nz);
 fwrite(fid,data_3DA.nx,'int');
 fwrite(fid,data_3DA.ny,'int');
@@ -19,9 +19,15 @@ fwrite(fid,data_3DA.dt,'double');
 fwrite(fid,data_3DA.time,'double');
 
 for ivar = 1:data_3DA.nvar
-    fprintf(data_3DA.data(ivar).name)
+    buf = data_3DA.data(ivar).name;
+    try
+        name = buf{1};
+    catch ME
+        name = buf;
+    end
+    fprintf(name)
     fprintf(' ')
-    fwrite(fid, strpad(data_3DA.data(ivar).name,8), 'char*1');
+    fwrite(fid, strpad(name,8), 'char*1');
 end
 fprintf('\n')
 

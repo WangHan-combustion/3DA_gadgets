@@ -101,7 +101,7 @@ end
 fclose(fid);
 
 if (~isempty(filename))
-    save(['./',filename,'.mat'],'nx','ny','nz','nvar','dt','time','data')
+    save(['./',filename,'.mat'],'nx','ny','nz','nvar','dt','time','data','-v7.3')
 end
 if (nargout>=1)
     data_3DA.nx = nx;
