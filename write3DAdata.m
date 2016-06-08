@@ -8,7 +8,7 @@ function write3DAdata( data_3DA, filename )
 %           none
 % ----------------------------------------------------------------
 
-fid = fopen(filename, 'w+');
+fid = fopen(filename, 'wt');
 fprintf('Grid : %i x %i x %i\n',data_3DA.nx,data_3DA.ny,data_3DA.nz);
 fwrite(fid,data_3DA.nx,'int');
 fwrite(fid,data_3DA.ny,'int');
