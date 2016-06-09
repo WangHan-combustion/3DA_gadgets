@@ -14,6 +14,7 @@ for ii = 1:chemtable.nZVar-1
     end
 end
 
+isc = 1;
 for ii = 1:chemtable.n3-1
     if (chemtable.Z3(ii)-C)*(chemtable.Z3(ii+1)-C)<=0
         idx_C = ii;
