@@ -33,7 +33,7 @@ for ivar = 1:data_target.nvar
     fprintf('\n')
     data_target.data(ivar).value = ...
         interp3(config_source.y(2:end), config_source.x(2:end), config_source.z(2:end), data_source.data(ivar).value, ...
-        Xq,Yq,Zq, method, 0.0);
+        Xq,Yq,Zq, method, nan);
 end
 %%
 if (~isempty(filename_data_target))

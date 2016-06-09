@@ -1,4 +1,4 @@
-function write3DAconfig( filename, config )
+function write3DAconfig( config,filename )
 % This script write config file for 3DA
 % INPUT :
 %           matlab struc config

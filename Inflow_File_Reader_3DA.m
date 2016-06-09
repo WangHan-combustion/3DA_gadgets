@@ -26,4 +26,4 @@ end
 
 fclose(iunit);
 save([filename,'_',num2str(dims(1),'%4.3e'),'.mat'], ...
-    'dims','inflow_freq','time','icyl','y','z','data')
+    'dims','inflow_freq','time','icyl','y','z','data','-v7.3')

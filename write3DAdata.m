@@ -19,9 +19,15 @@ fwrite(fid,data_3DA.dt,'double');
 fwrite(fid,data_3DA.time,'double');
 
 for ivar = 1:data_3DA.nvar
-    fprintf(data_3DA.data(ivar).name)
+    buf = data_3DA.data(ivar).name;
+    try
+        name = buf{1};
+    catch ME
+        name = buf;
+    end
+    fprintf(name)
     fprintf(' ')
-    fwrite(fid, strpad(data_3DA.data(ivar).name,8), 'char*1');
+    fwrite(fid, strpad(name,8), 'char*1');
 end
 fprintf('\n')
 
