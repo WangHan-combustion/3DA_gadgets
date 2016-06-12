@@ -1,5 +1,6 @@
 function res = chemtable_lookup(chemtable,ZMean,ZVar,C,var_names)
 %% Find the indices corresponding to the specified condition
+ZMean = min(max(ZMean,min(chemtable.ZMean)),max(chemtable.ZMean));
 for ii = 1:chemtable.nZMean-1
     if (chemtable.ZMean(ii)-ZMean)*(chemtable.ZMean(ii+1)-ZMean)<=0
         idx_ZMean = ii;
@@ -7,6 +8,7 @@ for ii = 1:chemtable.nZMean-1
     end
 end
 
+ZVar = min(max(ZVar,min(chemtable.ZVar)),max(chemtable.ZVar));
 for ii = 1:chemtable.nZVar-1
     if (chemtable.ZVar(ii)-ZVar)*(chemtable.ZVar(ii+1)-ZVar)<=0
         idx_ZVar = ii;
@@ -14,7 +16,7 @@ for ii = 1:chemtable.nZVar-1
     end
 end
 
-idx_C = 1;
+C = min(max(C,min(chemtable.Z3)),max(chemtable.Z3));
 for ii = 1:chemtable.n3-1
     if (chemtable.Z3(ii)-C)*(chemtable.Z3(ii+1)-C)<=0
         idx_C = ii;
