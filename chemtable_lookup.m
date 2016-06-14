@@ -1,72 +1,130 @@
 function res = chemtable_lookup(chemtable,ZMean,ZVar,C,var_names)
+NZMean = length(ZMean);
+NZVar  = length(ZVar);
+NC = length(C);
+if (NZMean~=NZVar || NZMean~=NC || NZVar~=NC)
+    error('Input parameters must have same size.')
+end
+N = NZMean;
 %% Find the indices corresponding to the specified condition
+idx_ZMean = zeros(N,1);
+idx_ZVar = zeros(N,1);
+idx_C = zeros(N,1);
 ZMean = min(max(ZMean,min(chemtable.ZMean)),max(chemtable.ZMean));
-for ii = 1:chemtable.nZMean-1
-    if (chemtable.ZMean(ii)-ZMean)*(chemtable.ZMean(ii+1)-ZMean)<=0
-        idx_ZMean = ii;
-        break;
-    end
-end
-
 ZVar = min(max(ZVar,min(chemtable.ZVar)),max(chemtable.ZVar));
-for ii = 1:chemtable.nZVar-1
-    if (chemtable.ZVar(ii)-ZVar)*(chemtable.ZVar(ii+1)-ZVar)<=0
-        idx_ZVar = ii;
-        break;
-    end
-end
-
 C = min(max(C,min(chemtable.Z3)),max(chemtable.Z3));
-for ii = 1:chemtable.n3-1
-    if (chemtable.Z3(ii)-C)*(chemtable.Z3(ii+1)-C)<=0
-        idx_C = ii;
-        break;
+for isc = 1:N
+    for ii = 1:chemtable.nZMean-1
+        if (chemtable.ZMean(ii)-ZMean(isc))*(chemtable.ZMean(ii+1)-ZMean(isc))<=0
+            idx_ZMean(isc) = ii;
+            break;
+        end
+    end
+
+    for ii = 1:chemtable.nZVar-1
+        if (chemtable.ZVar(ii)-ZVar(isc))*(chemtable.ZVar(ii+1)-ZVar(isc))<=0
+            idx_ZVar(isc) = ii;
+            break;
+        end
+    end
+
+    for ii = 1:chemtable.n3-1
+        if (chemtable.Z3(ii)-C(isc))*(chemtable.Z3(ii+1)-C(isc))<=0
+            idx_C(isc) = ii;
+            break;
+        end
     end
 end
-%% Read the table and interpolate
-% Read
-buf_3D = zeros(2,2,2,chemtable.nvar_out);
-buf_3D(1,1,1,:) = chemtable.data(idx_ZMean  ,idx_ZVar  ,idx_C  ,:);
-buf_3D(1,1,2,:) = chemtable.data(idx_ZMean  ,idx_ZVar  ,idx_C+1,:);
-buf_3D(1,2,1,:) = chemtable.data(idx_ZMean  ,idx_ZVar+1,idx_C  ,:);
-buf_3D(1,2,2,:) = chemtable.data(idx_ZMean  ,idx_ZVar+1,idx_C+1,:);
-buf_3D(2,1,1,:) = chemtable.data(idx_ZMean+1,idx_ZVar  ,idx_C  ,:);
-buf_3D(2,1,2,:) = chemtable.data(idx_ZMean+1,idx_ZVar  ,idx_C+1,:);
-buf_3D(2,2,1,:) = chemtable.data(idx_ZMean+1,idx_ZVar+1,idx_C  ,:);
-buf_3D(2,2,2,:) = chemtable.data(idx_ZMean+1,idx_ZVar+1,idx_C+1,:);
-
-% Interpolate
-% C
-buf_2D = buf_3D(:,:,1,:) + ...
-    (C-chemtable.Z3(idx_C))/ ...
-    (chemtable.Z3(idx_C+1)-chemtable.Z3(idx_C))* ...
-    (buf_3D(:,:,2,:)-buf_3D(:,:,1,:));
-buf_2D = squeeze(buf_2D);
-
-% ZVar
-buf_1D = buf_2D(:,1,:) + ...
-    (ZVar-chemtable.ZVar(idx_ZVar))/ ...
-    (chemtable.ZVar(idx_ZVar+1)-chemtable.ZVar(idx_ZVar))* ...
-    (buf_2D(:,2,:)-buf_2D(:,1,:));
-buf_1D = squeeze(buf_1D);
-
-% ZMean
-res = buf_1D(1,:) + ...
-    (ZMean-chemtable.ZMean(idx_ZMean))/ ...
-    (chemtable.ZMean(idx_ZMean+1)-chemtable.ZMean(idx_ZMean))* ...
-    (buf_1D(2,:)-buf_1D(1,:));
-res = squeeze(res);
 
 %% look for specific variable
+idx_sc = 1:chemtable.nvar_out;
 if nargin>4
-    res_ = res;
-    res = zeros(1,length(var_names));
+    idx_sc = zeros(1,length(var_names));
     for isc = 1:length(var_names)
         for ii = 1:chemtable.nvar_out
             if strcmp(var_names{isc},chemtable.name{ii})
-                res(isc) = res_(ii);
+                idx_sc(isc) = ii;
                 break;
             end
         end
     end
 end
+nvar = length(idx_sc);
+%% Read the table and interpolate
+% Read
+buf_3D = zeros(N,2,2,2,nvar);
+for isc = 1:nvar
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean, ...
+        idx_ZVar, ...
+        idx_C, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,1,1,1,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean, ...
+        idx_ZVar, ...
+        idx_C+1, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,1,1,2,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean, ...
+        idx_ZVar+1, ...
+        idx_C, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,1,2,1,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean, ...
+        idx_ZVar+1, ...
+        idx_C+1, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,1,2,2,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean+1, ...
+        idx_ZVar, ...
+        idx_C, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,2,1,1,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean+1, ...
+        idx_ZVar, ...
+        idx_C+1, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,2,1,2,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean+1, ...
+        idx_ZVar+1, ...
+        idx_C, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,2,2,1,isc) = chemtable.data(idx_buf);
+    idx_buf = sub2ind(size(chemtable.data), ...
+        idx_ZMean+1, ...
+        idx_ZVar+1, ...
+        idx_C+1, ...
+        idx_sc(isc)*ones(size(idx_ZMean)));
+    buf_3D(:,2,2,2,isc) = chemtable.data(idx_buf);
+end
+
+% Interpolate
+% C
+interp = (C-chemtable.Z3(idx_C))./ ...
+    (chemtable.Z3(idx_C+1)-chemtable.Z3(idx_C));
+buf_2D = buf_3D(:,:,:,1,:) + ...
+    repmat(interp,[1 2 2 1 nvar]).* ...
+    (buf_3D(:,:,:,2,:)-buf_3D(:,:,:,1,:));
+% buf_2D = squeeze(buf_2D);
+
+% ZVar
+interp = (ZVar-chemtable.ZVar(idx_ZVar))./ ...
+    (chemtable.ZVar(idx_ZVar+1)-chemtable.ZVar(idx_ZVar));
+buf_1D = reshape(buf_2D(:,:,1,1,:),[N 2 1 1 nvar]) + ...
+    repmat(interp,[1 2 1 1 nvar]) .* ...
+    reshape((buf_2D(:,:,2,1,:)-buf_2D(:,:,1,1,:)),[N 2 1 1 nvar]);
+% buf_1D = squeeze(buf_1D);
+
+% ZMean
+interp = (ZMean-chemtable.ZMean(idx_ZMean))./ ...
+    (chemtable.ZMean(idx_ZMean+1)-chemtable.ZMean(idx_ZMean));
+res = reshape(buf_1D(:,1,1,1,:),[N 1 1 1 nvar]) + ...
+    repmat(interp,[1 1 1 1 nvar]).* ...
+    reshape((buf_1D(:,2,1,1,:)-buf_1D(:,1,1,1,:)),[N 1 1 1 nvar]);
+res = squeeze(res);
