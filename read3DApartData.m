@@ -23,11 +23,14 @@ switch version
         max_comp = 10;
         mk = zeros(npart,max_comp);
         for ipart = 1:npart
-            for ii = 1:15
+            for ii = 1:7
                 part(ipart,ii) = fread(fid,1,'real*8');
             end
             for ii = 1:max_comp
                 mk(ipart,ii) = fread(fid,1,'real*8');
+            end
+            for ii = 8:15
+                part(ipart,ii) = fread(fid,1,'real*8');
             end
             for ii = 16:length(ref)
                 part(ipart,ii) = fread(fid,1,'integer*4');
