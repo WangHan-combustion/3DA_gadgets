@@ -11,12 +11,12 @@ switch version
             fwrite(fid,data.part(ipart,16:length(data.ref)),'integer*4');
         end
     case 'Chemkin 3DA'
-        max_comp = size(data.part,2);
+        max_comp = size(data.mk,2);
         for ipart = 1:data.npart
             fwrite(fid,data.part(ipart,1:7),'real*8');
             fwrite(fid,data.mk(ipart,1:max_comp),'real*8');
             fwrite(fid,data.part(ipart,8:15),'real*8');
-            fwrite(fid,data.part(ipart,16:length(ref)),'integer*4');
+            fwrite(fid,data.part(ipart,16:length(data.ref)),'integer*4');
         end
 end
 fclose(fid);
