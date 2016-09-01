@@ -18,7 +18,7 @@ switch version
             end
         end
         fclose(fid);
-        save('./part_data.mat','npart','part_size','dt','time','ref','part')
+        save([filename,'.mat'],'npart','part_size','dt','time','ref','part')
     case 'Chemkin 3DA'
         ref = {'x','y','z','u','v','w','m','d','rho','T','dmdt','beta','tbreak', ...
             'nparcel','dt','del_u','del_v','del_w','i','j','k','tag','stop'};
@@ -32,7 +32,7 @@ switch version
             end
         end
         fclose(fid);
-        save('./part_data.mat','npart','part_size','dt','time','ref','part')
+        save([filename,'.mat'],'npart','part_size','dt','time','ref','part')
     case 'Chemkin 3DA Multicomp'
         ref = {'x','y','z','u','v','w','m','d','rho','T','dmdt','beta','tbreak', ...
             'nparcel','dt','i','j','k','tag','stop'};
@@ -54,7 +54,7 @@ switch version
             end
         end
         fclose(fid);
-        save('./part_data.mat','npart','part_size','dt','time','ref','part','max_comp','mk')
+        save([filename,'.mat'],'npart','part_size','dt','time','ref','part','max_comp','mk')
 end
 
 part_data.npart = npart;
