@@ -10,7 +10,7 @@ fwrite(fid,dims,'integer*4');
 fwrite(fid,inflow_freq,'real*8');
 fwrite(fid,time,'real*8');
 for isc = 1:dims(4)
-    fwrite(fid,data(isc).name,'char*1',8-length(data(isc).name));
+    fwrite(fid,data(isc).name{1},'char*1',8-length(data(isc).name{1}));
 end
 fwrite(fid,icyl,'integer*4');
 fwrite(fid,y,'real*8');
