@@ -1,5 +1,5 @@
 function stat_spray = read3DAStat2DSpray(filename)
-fid = fopen(filename);
+fid = fopen(filename,'r');
 
 buf = fread(fid,4,'integer*4');
 stat_spray.nx = buf(1);
@@ -21,6 +21,6 @@ for i = 1:stat_spray.nvar
         stat_spray.nx,stat_spray.ny);
 end
 
-save([filename,'.mat'],stat_spray)
 
 fclose(fid);
+save([filename,'.mat'],'stat_spray')
