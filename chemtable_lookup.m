@@ -42,13 +42,15 @@ if nargin>4
     idx_sc = zeros(1,length(var_names));
     for isc = 1:length(var_names)
         for ii = 1:chemtable.nvar_out
-            if strcmp(var_names{isc},chemtable.name{ii})
+            if (strcmp(var_names{isc},chemtable.name{ii}) || ...
+                    strcmp(['massfraction-',var_names{isc}],chemtable.name{ii}))
                 idx_sc(isc) = ii;
                 break;
             end
         end
     end
 end
+idx_sc(idx_sc==0) = [];
 nvar = length(idx_sc);
 %% Read the table and interpolate
 % Read
