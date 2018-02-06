@@ -18,13 +18,14 @@ if (any(diff(config.x)<=0) || any(diff(config.y)<=0) || any(diff(config.z)<=0))
 end
 
 size_tmp = size(config.mask);
-if (config.nx~=size_tmp(1) || config.ny~=size_tmp(2) || config.nz~=size_tmp(3))
+if (config.nx~=size(config.mask,1) || config.ny~=size(config.mask,2) || config.nz~=size(config.mask,3))
+% if (config.nx~=size_tmp(1) || config.ny~=size_tmp(2) || config.nz~=size_tmp(3))
     error('Size in the config file does not match mask')
 end
 
 if (isfield(config, 'bc') && ~isempty(config.bc))
     size_tmp = size(config.bc);
-    if (config.nx~=size_tmp(1) || config.ny~=size_tmp(2) || config.nz~=size_tmp(3))
+    if (config.nx~=size(config.mask,1) || config.ny~=size(config.mask,2) || config.nz~=size(config.mask,3))
         error('Size in the config file does not match mask')
     end
 end
