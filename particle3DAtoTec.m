@@ -11,7 +11,7 @@ fprintf(fid,'zone t = "droplet"\n');
 % print the data type
 fprintf(fid,'f = point\n');
 % print the data
-if (narginxi<3)
+if (nargin<3)
   nskip = 1;
 end
 n_tot = size(part_data.part,1);
