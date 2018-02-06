@@ -43,7 +43,8 @@ if nargin>4
     for isc = 1:length(var_names)
         for ii = 1:chemtable.nvar_out
             if (strcmp(var_names{isc},chemtable.name{ii}) || ...
-                    strcmp(['massfraction-',var_names{isc}],chemtable.name{ii}))
+                    strcmp(['massfraction-',var_names{isc}],chemtable.name{ii}) || ...
+                    strcmp(['Y_',var_names{isc}],chemtable.name{ii}))
                 idx_sc(isc) = ii;
                 break;
             end
