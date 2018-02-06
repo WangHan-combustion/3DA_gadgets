@@ -11,8 +11,8 @@ fwrite(fid,inflow_freq,'real*8');
 fwrite(fid,time,'real*8');
 for isc = 1:dims(4)
     buf = '        ';
-    buf(1:length(data(isc).name{1})) = data(isc).name{1};
-    % fwrite(fid,data(isc).name{1},'char*1',8-length(data(isc).name{1}));
+    buf(1:length(data(isc).name)) = data(isc).name;
+%     fwrite(fid,data(isc).name{1},'char*1',8-length(data(isc).name{1}));
     fwrite(fid,buf,'char*1');
 end
 fwrite(fid,icyl,'integer*4');
