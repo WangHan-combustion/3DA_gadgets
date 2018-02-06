@@ -11,6 +11,11 @@ switch version
             fwrite(fid,data.part(ipart,16:length(data.ref)),'integer*4');
         end
     case 'Chemkin 3DA'
+        for ipart = 1:data.npart
+            fwrite(fid,data.part(ipart,1:18),'real*8');
+            fwrite(fid,data.part(ipart,19:length(data.ref)),'integer*4');
+        end
+    case 'Chemkin 3DA multicomp'
         max_comp = size(data.mk,2);
         for ipart = 1:data.npart
             fwrite(fid,data.part(ipart,1:7),'real*8');
